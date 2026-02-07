@@ -223,7 +223,7 @@ This project is licensed under the MIT License. You are free to use, modify, and
 
 ### Author
 
-**[Your Name]**
+**[Rahaf-Tariq]**
 - GitHub: [@Rahaf-Tariq](https://github.com/Rahaf-Tariq)
 - Email: rahafkhan510@gmail.com
 
