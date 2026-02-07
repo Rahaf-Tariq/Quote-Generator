@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mood Quote Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        transition: all 0.5s ease;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .page {
+        width: 100%;
+        height: 100%;
+        display: none;
+        transition: opacity 0.4s ease;
+      }
+
+      .page.active {
+        display: flex;
+      }
+
+      .mood-selection {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .quote-page {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+      }
+
+      .main-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        animation: fadeIn 0.6s ease;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 3em;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: 1px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .mood-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        animation: slideUp 0.6s ease;
+        width: 100%;
+        max-width: 700px;
+      }
+
+      .mood-btn {
+        padding: 18px 24px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .mood-btn:hover {
+        transform: translateY(-10px); /* more movement */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .mood-btn.active {
+        transform: scale(1.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Mood Button Colors Options*/
+      .happy {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .sad {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      .sad:hover {
+        filter: brightness(1.1); /* makes it pop a bit */
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .motivated {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      .calm {
+        background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+      }
+
+      .creative {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+      }
+
+      .creative:hover,
+      .creative.active {
+        color: white;
+      }
+
+      .love {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
+      }
+
+      .hopeful {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #333;
+      }
+
+      .hopeful:hover,
+      .hopeful.active {
+        color: white;
+      }
+
+      .quote-section {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        animation: slideUp 0.6s ease 0.2s both;
+      }
+
+      .quote-text {
+        font-size: 1.8em;
+        font-weight: 300;
+        line-height: 1.8;
+        color: #333;
+        font-style: italic;
+        text-align: center;
+        font-family: "Playfair Display", serif;
+      }
+
+      .quote-author {
+        text-align: right;
+        font-size: 1em;
+        color: #888;
+        margin-top: 15px;
+      }
+
+      .quote-author:before {
+        content: "— ";
+      }
+
+      .quote-controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-new-quote {
+        border-color: #667eea;
+        color: #667eea;
+      }
+
+      .btn-new-quote:hover {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-save {
+        border-color: #f5576c;
+        color: #f5576c;
+      }
+
+      .btn-save:hover {
+        background: #f5576c;
+        color: white;
+      }
+
+      .btn-save.saved {
+        background: #f5576c;
+        color: white;
+        border-color: #f5576c;
+      }
+
+      .btn-back {
+        border-color: white;
+        color: white;
+        background: transparent;
+        padding: 10px 20px;
+        font-size: 1em;
+      }
+
+      .btn-back:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .favorites-section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        width: 320px;
+        max-height: 600px;
+        overflow-y: auto;
+        animation: slideRight 0.6s ease 0.2s both;
+      }
+
+      .favorites-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        text-align: center;
+      }
+
+      .favorite-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .favorite-item:hover {
+        background: #f0f0f0;
+      }
+
+      .favorite-quote {
+        font-size: 0.9em;
+        color: #555;
+        flex: 1;
+      }
+
+      .favorite-mood {
+        display: inline-block;
+        font-size: 0.75em;
+        background: #667eea;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .btn-remove {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .btn-remove:hover {
+        background: #ff5252;
+      }
+
+      .empty-message {
+        text-align: center;
+        color: #aaa;
+        padding: 40px 20px;
+        font-style: italic;
+      }
+
+      /* Background color transitions per mood */
+      body.happy-bg {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      body.sad-bg {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      body.motivated-bg {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      body.calm-bg {
+        background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+      }
+
+      body.creative-bg {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      }
+
+      body.love-bg {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
+      }
+
+      body.hopeful-bg {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Scrollbar styling */
+      .favorites-section::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .favorites-section::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .favorites-section::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 10px;
+      }
+
+      .favorites-section::-webkit-scrollbar-thumb:hover {
+        background: #764ba2;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .favorites-section {
+          width: 100%;
+          max-height: 400px;
+        }
+
+        .header h1 {
+          font-size: 2.2em;
+        }
+
+        .quote-text {
+          font-size: 1.3em;
+        }
+
+        .mood-buttons {
+          max-width: 100%;
+        }
+      }
+      #moodPage.page.active {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- mood selection page -->
+    <div id="moodPage" class="page active">
+      <div class="header">
+        <h1>Mood Quote Generator</h1>
+        <p>How are you feeling today?</p>
+      </div>
+
+      <div class="mood-buttons">
+        <button class="mood-btn happy" data-mood="happy">Happy</button>
+        <button class="mood-btn sad" data-mood="sad">Sad</button>
+        <button class="mood-btn motivated" data-mood="motivated">
+          Motivated
+        </button>
+        <button class="mood-btn calm" data-mood="calm">Calm</button>
+        <button class="mood-btn creative" data-mood="creative">Creative</button>
+        <button class="mood-btn love" data-mood="love">Love</button>
+        <button class="mood-btn hopeful" data-mood="hopeful">Hopeful</button>
+      </div>
+    </div>
+
+    <!-- qutoe page -->
+    <div id="quotePage" class="page">
+      <div class="container">
+        <div class="main-section">
+          <div style="text-align: left">
+            <button class="btn btn-back" id="backBtn">← Back</button>
+          </div>
+
+          <div class="quote-section">
+            <div class="quote-text" id="quoteText">
+              Select a mood to get started
+            </div>
+            <div
+              class="quote-author"
+              id="quoteAuthor"
+              style="display: none"
+            ></div>
+            <div class="quote-controls">
+              <button class="btn btn-new-quote" id="newQuoteBtn">
+                New Quote
+              </button>
+              <button class="btn btn-save" id="saveBtn">Save Quote</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="favorites-section">
+          <h2>Favorites</h2>
+          <div id="favoritesList"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const quotes = {
+        happy: [
+          {
+            text: "Happiness is not something ready made. It comes from your own actions.",
+            author: "Dalai Lama",
+          },
+          {
+            text: "Remember, you are the author of your own story.",
+            author: "Amy Poehler",
+          },
+          {
+            text: "Today is a good day to have a good day.",
+            author: "Unknown",
+          },
+          {
+            text: "The only way to do great work is to love what you do.",
+            author: "Steve Jobs",
+          },
+          { text: "Smile, it's the best makeup.", author: "Marilyn Monroe" },
+          { text: "You are capable of amazing things.", author: "Unknown" },
+        ],
+        sad: [
+          {
+            text: "Sadness is but a wall between two gardens.",
+            author: "Kahlil Gibran",
+          },
+          {
+            text: "The wound is the place where the Light enters you.",
+            author: "Rumi",
+          },
+          {
+            text: "Every night brings the promise of a new day.",
+            author: "Ralph Waldo Emerson",
+          },
+          {
+            text: "In time, the harsh edges of any tragedy soften.",
+            author: "Phyllis McGinley",
+          },
+          { text: "This too shall pass.", author: "Unknown" },
+          {
+            text: "Even on the darkest nights, stars shine bright.",
+            author: "Unknown",
+          },
+        ],
+        motivated: [
+          {
+            text: "The only way to achieve the impossible is to believe it is possible.",
+            author: "Charles Kingsleigh",
+          },
+          {
+            text: "Your time is limited, don't waste it living someone else's life.",
+            author: "Steve Jobs",
+          },
+          {
+            text: "Success is not final, failure is not fatal.",
+            author: "Winston Churchill",
+          },
+          {
+            text: "You have within you right now, everything you need to deal with whatever the world can throw at you.",
+            author: "Brian Tracy",
+          },
+          {
+            text: "Believe you can and you're halfway there.",
+            author: "Theodore Roosevelt",
+          },
+          {
+            text: "The future belongs to those who believe in the beauty of their dreams.",
+            author: "Eleanor Roosevelt",
+          },
+        ],
+        calm: [
+          {
+            text: "Peace comes from within. Do not seek it without.",
+            author: "Gautama Buddha",
+          },
+          { text: "Breathe. You are going to be okay.", author: "Unknown" },
+          {
+            text: "In the middle of difficulty lies opportunity.",
+            author: "Albert Einstein",
+          },
+          { text: "Let your peace be your strength.", author: "Unknown" },
+          {
+            text: "Serenity is not freedom from the storm, but peace amid the storm.",
+            author: "Unknown",
+          },
+          {
+            text: "One moment of patience may ward off great disaster.",
+            author: "Chinese Proverb",
+          },
+        ],
+        creative: [
+          { text: "Creativity takes courage.", author: "Henri Matisse" },
+          {
+            text: "The chief enemy of creativity is good sense.",
+            author: "Pablo Picasso",
+          },
+          {
+            text: "Creativity is thinking up new things. Innovation is doing new things.",
+            author: "Theodore Levitt",
+          },
+          {
+            text: "Don't think. Thinking is the enemy of creativity.",
+            author: "Ray Bradbury",
+          },
+          {
+            text: "Everything you want to create belongs to you.",
+            author: "Unknown",
+          },
+          {
+            text: "Your imagination is the canvas of your dreams.",
+            author: "Unknown",
+          },
+        ],
+        love: [
+          {
+            text: "The heart has its reasons which reason knows nothing of.",
+            author: "Blaise Pascal",
+          },
+          { text: "Love is powerful and unconditional.", author: "Unknown" },
+          {
+            text: "You are my today and all of my tomorrows.",
+            author: "Leo Christopher",
+          },
+          { text: "In your eyes I see the world I love.", author: "Unknown" },
+          {
+            text: "Love is the bridge between you and everything.",
+            author: "Rumi",
+          },
+          {
+            text: "Where there is love, there is no darkness.",
+            author: "Unknown",
+          },
+        ],
+        hopeful: [
+          {
+            text: "Hope is being able to see that there is light despite all the darkness.",
+            author: "Desmond Tutu",
+          },
+          { text: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
+          {
+            text: "The best time to plant a tree was 20 years ago. The second best time is now.",
+            author: "Chinese Proverb",
+          },
+          {
+            text: "Let your hopes, not your hurts, shape your future.",
+            author: "Robert H. Schuller",
+          },
+          { text: "Dawn will always come.", author: "Unknown" },
+          { text: "Believe in better days ahead.", author: "Unknown" },
+        ],
+      };
+
+      let currentMood = null;
+      let currentQuote = null;
+      let currentAuthor = null;
+      let favorites = JSON.parse(localStorage.getItem("favoriteQuotes")) || [];
+
+      const moodBtns = document.querySelectorAll(".mood-btn");
+      const quoteText = document.getElementById("quoteText");
+      const quoteAuthor = document.getElementById("quoteAuthor");
+      const newQuoteBtn = document.getElementById("newQuoteBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const backBtn = document.getElementById("backBtn");
+      const favoritesList = document.getElementById("favoritesList");
+      const moodPage = document.getElementById("moodPage");
+      const quotePage = document.getElementById("quotePage");
+
+      // Page navigation
+      function showMoodPage() {
+        moodPage.classList.add("active");
+        quotePage.classList.remove("active");
+      }
+
+      function showQuotePage() {
+        quotePage.classList.add("active");
+        moodPage.classList.remove("active");
+      }
+
+      backBtn.addEventListener("click", showMoodPage);
+
+      // Add click listeners to mood buttons
+      moodBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // Remove active class from all buttons
+          moodBtns.forEach((b) => b.classList.remove("active"));
+          // Add active class to clicked button
+          btn.classList.add("active");
+          // Get mood and display quote
+          currentMood = btn.dataset.mood;
+          changeBackground(currentMood);
+          displayQuote();
+          saveBtn.classList.remove("saved");
+          resetSaveButton();
+          showQuotePage();
+        });
+      });
+
+      function displayQuote() {
+        if (!currentMood) return;
+
+        const moodQuotes = quotes[currentMood];
+        const randomQuote =
+          moodQuotes[Math.floor(Math.random() * moodQuotes.length)];
+
+        currentQuote = randomQuote.text;
+        currentAuthor = randomQuote.author;
+
+        quoteText.textContent = currentQuote;
+        quoteAuthor.textContent = currentAuthor;
+        quoteAuthor.style.display = "block";
+      }
+
+      function changeBackground(mood) {
+        // Remove all background classes
+        document.body.className = "";
+        // Add the appropriate background class
+        document.body.classList.add(`${mood}-bg`);
+      }
+
+      newQuoteBtn.addEventListener("click", displayQuote);
+
+      saveBtn.addEventListener("click", () => {
+        if (!currentQuote || !currentAuthor || !currentMood) return;
+
+        const favorite = {
+          mood: currentMood,
+          quote: currentQuote,
+          author: currentAuthor,
+          id: Date.now(),
+        };
+
+        // Check if already saved
+        const isAlreadySaved = favorites.some(
+          (fav) => fav.quote === currentQuote,
+        );
+
+        if (!isAlreadySaved) {
+          favorites.push(favorite);
+          localStorage.setItem("favoriteQuotes", JSON.stringify(favorites));
+          saveBtn.classList.add("saved");
+          saveBtn.textContent = "Saved";
+        }
+
+        renderFavorites();
+      });
+
+      function renderFavorites() {
+        if (favorites.length === 0) {
+          favoritesList.innerHTML =
+            '<div class="empty-message">No favorites yet. Save your first quote!</div>';
+          return;
+        }
+
+        favoritesList.innerHTML = favorites
+          .map(
+            (fav) => `
+                <div class="favorite-item">
+                    <div>
+                        <div class="favorite-mood">${fav.mood}</div>
+                        <div class="favorite-quote">${fav.quote}</div>
+                        <div style="font-size: 0.8em; color: #999; margin-top: 8px;">— ${fav.author}</div>
+                    </div>
+                    <button class="btn-remove" onclick="removeFavorite(${fav.id})">✕</button>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      function removeFavorite(id) {
+        favorites = favorites.filter((fav) => fav.id !== id);
+        localStorage.setItem("favoriteQuotes", JSON.stringify(favorites));
+        renderFavorites();
+        resetSaveButton();
+      }
+
+      function resetSaveButton() {
+        saveBtn.classList.remove("saved");
+        saveBtn.textContent = "Save Quote";
+      }
+
+      // Initial render
+      renderFavorites();
+    </script>
+  </body>
+</html>
