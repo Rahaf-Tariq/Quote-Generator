@@ -9,6 +9,9 @@
 
 Mood Quote Generator is a single-page web application that helps users find inspiration through curated quotes. Select your current mood from seven emotional states, and receive relevant quotes with beautiful, matching visual themes. Save your favorite quotes for later reference with built-in local storage.
 
+![Project Banner](https://github.com/Rahaf-Tariq/Quote-Generator/blob/e4bc6c6f7be6d32ca094682ac645630648d9f81e/mood%20quote%20gen%20name.PNG)
+
+
 ## What This Project Does
 
 The Mood Quote Generator provides:
